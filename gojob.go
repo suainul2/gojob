@@ -34,10 +34,10 @@ func (jq *JobQueue) AddJob(job Job) {
 }
 
 func (jq *JobQueue) Stop(uid string) {
-	blacklist = append(blacklist, uid)
+	Blacklist = append(Blacklist, uid)
 }
 func searchBlacklist(search string) bool {
-	for _, x := range blacklist {
+	for _, x := range Blacklist {
 		if x == search {
 			return false
 		}
