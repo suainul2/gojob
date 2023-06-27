@@ -19,7 +19,7 @@ type JobQueue struct {
 	// tambahkan field lain yang diperlukan
 }
 
-var Blacklist []string
+var blacklist []string
 
 func NewGojob() *JobQueue {
 	return &JobQueue{
@@ -34,15 +34,15 @@ func (jq *JobQueue) AddJob(job Job) {
 }
 
 func (jq *JobQueue) Stop(uid string) {
-	Blacklist = append(Blacklist, uid)
+	blacklist = append(blacklist, uid)
 }
-func searchBlacklist(search string) bool {
-	for _, x := range Blacklist {
+func searchBlacklist(search string) (int, bool) {
+	for i, x := range blacklist {
 		if x == search {
-			return false
+			return i, false
 		}
 	}
-	return true
+	return 0, true
 }
 func (jq *JobQueue) ProcessJobs() {
 	var wg sync.WaitGroup
@@ -55,8 +55,10 @@ func (jq *JobQueue) ProcessJobs() {
 				defer wg.Done()
 				time.Sleep(time.Duration(job.Delay) * time.Second) // contoh: tunggu 1 detik untuk memproses job
 				// Proses job di sini
-				if searchBlacklist(job.ID) {
+				if i, k := searchBlacklist(job.ID); k {
 					job.Fun(job)
+				} else {
+					blacklist = append(blacklist[:i], blacklist[i+1:]...)
 				}
 			}(job)
 		}
