@@ -19,7 +19,7 @@ type JobQueue struct {
 	// tambahkan field lain yang diperlukan
 }
 
-var blacklist []string
+var Blacklist []string
 
 func NewGojob() *JobQueue {
 	return &JobQueue{
